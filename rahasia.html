@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music 🎵</title>
+    <link rel="stylesheet" href="rahasia.css">
+</head>
+<body>
+
+    <!-- STARS -->
+    <div class="stars" id="stars"></div>
+
+    <!-- FLOATING HEARTS -->
+    <div class="hearts-container" id="heartsContainer"></div>
+
+    <!-- CONFETTI CANVAS -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- BACK BUTTON -->
+    <a href="Ultah.html" class="back-btn">← Kembali</a>
+
+    <!-- AUDIO PLAYER -->
+    <audio id="song" preload="none">
+        <source src="last-night-on-earth.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ============ LYRIC STAGE ============ -->
+    <div class="lyric-stage" id="lyricStage">
+        <div class="lyric-intro" id="lyricIntro">
+            <div class="lyric-intro-emoji">🎵</div>
+            <h2 class="lyric-intro-title">Sebuah Lagu untukmu...</h2>
+            <p class="lyric-intro-sub">Last Night on Earth — Green Day</p>
+            <button class="play-btn" id="playBtn">▶ Mainkan</button>
+            <p class="lyric-intro-hint" id="loadingHint">(lagu akan dimainkan, ikuti liriknya ya)</p>
+        </div>
+
+        <div class="lyric-content" id="lyricContent">
+            <div class="lyric-title">Last Night on Earth <span class="lyric-artist">· Green Day</span></div>
+            <div class="lyrics" id="lyrics"></div>
+        </div>
+
+        <div class="lyric-progress" id="lyricProgress">
+            <div class="lyric-progress-bar" id="lyricProgressBar"></div>
+        </div>
+    </div>
+
+    <!-- ============ MAIN CARD (confession) ============ -->
+    <div class="confession-wrapper" id="confessionWrapper">
+        <div class="confession-card">
+            <div class="emoji-row">💖✨💕</div>
+
+            <div class="counter" id="counter">1 / 6</div>
+
+            <div class="progress-dots" id="progressDots"></div>
+
+            <div class="message-area">
+                <p class="message" id="confessionMessage"></p>
+            </div>
+
+            <button class="btn-next" id="nextBtn">
+                <span id="btnText">Next</span>
+                <span>→</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================
+        //  1. STARS
+        // =====================================================
+        (function createStars() {
+            const container = document.getElementById('stars');
+            if (!container) return;
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
+                star.style.animationDelay = Math.random() * 4 + 's';
+                star.style.width = star.style.height = (1 + Math.random() * 3) + 'px';
+                container.appendChild(star);
+            }
+        })();
+
+        // =====================================================
+        //  2. FLOATING HEARTS
+        // =====================================================
+        (function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            if (!container) return;
+            const hearts = ['💖', '💕', '💗', '💝', '✨', '💘', '❤️'];
+            for (let i = 0; i < 18; i++) {
+                const el = document.createElement('div');
+                el.className = 'heart-float';
+                el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (1.2 + Math.random() * 1.8) + 'rem';
+                el.style.setProperty('--h-speed', (8 + Math.random() * 12) + 's');
+                el.style.setProperty('--h-delay', (Math.random() * 14) + 's');
+                container.appendChild(el);
+            }
+        })();
+
+        // =====================================================
+        //  3. LYRIC SYSTEM — "Last Night on Earth" (Green Day)
+        // =====================================================
+        // Lines shown until the "fire" climax, then confession appears.
+const lyrics = [
+            "I text a postcard sent to you, did it go through?",
+            "Sendin' all my love to you",
+            "You are the moonlight of my life every night",
+            "Givin' all my love to you",
+            "My beatin' heart belongs to you",
+            "I walked for miles 'til I found you",
+            "I'm here to honor you",
+            "If I lose everything in the fire",
+            "I'm sendin' all my love to you"
+        ];
+
+// Timing (seconds) when each line becomes the "current" one.
+        // Also serves as the timer fallback if the audio isn't available.
+// Matches the full 1:05 (65s) song, confession appears right at the end.
+        const lineTimes = [0, 7.25, 14.5, 21.75, 29, 36.25, 43.5, 50.75, 58];
+        const FIRE_LINE_INDEX = 7;       // "If I lose everything in the fire"
+        const LAST_LINE_INDEX = 8;       // "I'm sendin' all my love to you"
+        const REVEAL_DELAY = 7;          // seconds after last line -> confession at ~65s
+
+        const lyricStage = document.getElementById('lyricStage');
+        const lyricIntro = document.getElementById('lyricIntro');
+        const lyricContent = document.getElementById('lyricContent');
+        const lyricsEl = document.getElementById('lyrics');
+        const playBtn = document.getElementById('playBtn');
+        const loadingHint = document.getElementById('loadingHint');
+        const progressBar = document.getElementById('lyricProgressBar');
+        const song = document.getElementById('song');
+        const wrapper = document.getElementById('confessionWrapper');
+
+        let started = false;
+        let currentLine = -1;
+        let usingAudio = false;
+        let lineEls = [];
+
+        // Build lyric lines in the DOM
+        lyrics.forEach((text, i) => {
+            const line = document.createElement('div');
+            line.className = 'lyric-line';
+            line.textContent = text;
+            lyricsEl.appendChild(line);
+            lineEls.push(line);
+        });
+
+        function highlightLine(index) {
+            currentLine = index;
+            lineEls.forEach((line, i) => {
+                line.classList.remove('active', 'done');
+                if (i < index) line.classList.add('done');
+                if (i === index) line.classList.add('active');
+            });
+        }
+
+        function advanceTimerLine() {
+            // highlight next line based on timings
+            for (let i = 0; i < lineTimes.length; i++) {
+                if (!usingAudio) {
+                    // Timer fallback: use elapsed time
+                    const elapsed = (Date.now() - startTimestamp) / 1000;
+                    if (elapsed >= lineTimes[i] && i > currentLine) {
+                        highlightLine(i);
+                        break;
+                    }
+                }
+            }
+        }
+
+        let timerInterval = null;
+        let startTimestamp = 0;
+
+function startTimerFallback() {
+            startTimestamp = Date.now();
+            timerInterval = setInterval(function() {
+                const elapsed = (Date.now() - startTimestamp) / 1000;
+                // Update progress bar
+                const total = lineTimes[LAST_LINE_INDEX] + REVEAL_DELAY;
+                const pct = Math.min(100, (elapsed / total) * 100);
+                if (progressBar) progressBar.style.width = pct + '%';
+
+                // Advance line
+                for (let i = 0; i < lineTimes.length; i++) {
+                    if (elapsed >= lineTimes[i] && i > currentLine) {
+                        highlightLine(i);
+                    }
+                }
+
+                // Reached last line -> reveal confession
+                if (elapsed >= lineTimes[LAST_LINE_INDEX] + REVEAL_DELAY && !revealed) {
+                    revealConfession();
+                }
+            }, 200);
+        }
+
+        // =====================================================
+        //  PLAY HANDLER
+        // =====================================================
+        let revealed = false;
+
+        playBtn.addEventListener('click', function() {
+            if (started) return;
+            started = true;
+
+            // Hide intro, show lyrics
+            lyricIntro.classList.add('hide');
+            lyricContent.classList.add('show');
+
+            // Try to play audio
+            const playPromise = song.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(function() {
+                    // Audio not available -> use timer fallback
+                    usingAudio = false;
+                    if (loadingHint) loadingHint.textContent = '♫ (audio belum tersedia, lirik jalan otomatis) ♫';
+                    loadingHint.classList.add('shown');
+                    startTimerFallback();
+                });
+            }
+
+            // Listen for audio events
+            song.addEventListener('playing', function() {
+                usingAudio = true;
+                if (loadingHint) loadingHint.textContent = '♫ Now playing... ♫';
+                loadingHint.classList.add('shown');
+                startAudioSync();
+            });
+song.addEventListener('error', function() {
+                usingAudio = false;
+                if (loadingHint) loadingHint.textContent = '♫ (audio belum tersedia, lirik jalan otomatis) ♫';
+                loadingHint.classList.add('shown');
+                startTimerFallback();
+            });
+
+// When the song finishes, reveal the confession right away
+            song.addEventListener('ended', function() {
+                if (!revealed) revealConfession();
+            });
+
+            // Safety: if audio never loads within 3s, fall back to timer
+            setTimeout(function() {
+                if (!usingAudio && !timerInterval) {
+                    startTimerFallback();
+                }
+            }, 3000);
+
+            // Highlight first line immediately
+            highlightLine(0);
+        });
+
+function startAudioSync() {
+            // Sync line highlighting to audio currentTime
+            const sync = function() {
+                const t = song.currentTime;
+                const total = lineTimes[LAST_LINE_INDEX] + REVEAL_DELAY;
+                const pct = Math.min(100, (t / total) * 100);
+                if (progressBar) progressBar.style.width = pct + '%';
+
+                for (let i = 0; i < lineTimes.length; i++) {
+                    if (t >= lineTimes[i] && i > currentLine) {
+                        highlightLine(i);
+                    }
+                }
+
+                if (t >= lineTimes[LAST_LINE_INDEX] + REVEAL_DELAY && !revealed) {
+                    revealConfession();
+                }
+                requestAnimationFrame(sync);
+            };
+            requestAnimationFrame(sync);
+        }
+        
+        setTimeout(() => {
+            lyricStage.classList.add('visible');
+        }, 400);
+    </script>
+
+</body>
+</html>

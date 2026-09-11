@@ -1,0 +1,280 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    overflow: hidden;
+    position: relative;
+}
+
+/* ===== STARS ===== */
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--duration) ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.3; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ===== BALLOON ===== */
+.balloon-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.balloon {
+    position: absolute;
+    bottom: -100px;
+    font-size: 2rem;
+    animation: balloonFloat var(--speed) linear infinite;
+    animation-delay: var(--delay);
+    opacity: 0.8;
+}
+
+@keyframes balloonFloat {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    50% { transform: translateY(-50vh) rotate(5deg); }
+    100% { transform: translateY(-110vh) rotate(-5deg); opacity: 0; }
+}
+
+/* ===== CONFETTI ===== */
+#confettiCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* ===== CARD ===== */
+.card-wrapper {
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+}
+
+.card-wrapper.visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: all;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 40px;
+    padding: 60px 80px;
+    max-width: 700px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: cardFloat 6s ease-in-out infinite;
+}
+
+@keyframes cardFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+.emoji-row {
+    font-size: 2.5rem;
+    letter-spacing: 12px;
+    margin-bottom: 20px;
+    animation: emojiBounce 2s ease-in-out infinite;
+}
+
+@keyframes emojiBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.title {
+    font-size: 3.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f7971e, #ffd200, #f7971e);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientMove 3s ease-in-out infinite;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+@keyframes gradientMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+}
+
+.message-area {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0 15px;
+}
+
+.message {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.8;
+    margin: 0;
+    padding: 0 10px;
+}
+
+.message-enter {
+    animation: messageSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.message-exit {
+    animation: messageSlideOut 0.3s ease forwards;
+}
+
+@keyframes messageSlideIn {
+    0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes messageSlideOut {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-15px) scale(0.95); }
+}
+
+.nav-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 15px 0 20px;
+}
+
+.msg-counter {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 2px;
+}
+
+.btn-small {
+    padding: 10px 22px;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    backdrop-filter: blur(5px);
+}
+
+.btn-small:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.btn-small:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn-small:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+
+/* ===== SECRET BUTTON ===== */
+.secret-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-secret {
+    padding: 12px 35px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.08);
+    border: 2px solid rgba(255, 215, 0, 0.25);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    letter-spacing: 1px;
+    animation: secretGlow 2s ease-in-out infinite;
+}
+
+.btn-secret:hover {
+    background: rgba(255, 215, 0, 0.18);
+    border-color: #ffd700;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
+}
+
+.btn-secret:active {
+    transform: translateY(0) scale(0.97);
+}
+
+@keyframes secretGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.15); }
+    50% { box-shadow: 0 0 22px rgba(255, 215, 0, 0.4); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .card { padding: 40px 25px; border-radius: 28px; }
+    .title { font-size: 2.5rem; }
+    .subtitle { font-size: 1.1rem; }
+    .emoji-row { font-size: 1.8rem; letter-spacing: 8px; }
+    .message { font-size: 1rem; }
+}
+
+@media (max-width: 400px) {
+    .card { padding: 30px 18px; }
+    .title { font-size: 2rem; }
+    .subtitle { font-size: 0.95rem; }
+}
