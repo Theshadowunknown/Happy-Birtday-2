@@ -559,15 +559,6 @@ function handleLogin(event) {
     } else {
         errorMsg.innerText = "Username / Password salah! 😜";
     }
-}
-(function enforceAuthentication() {
-    var isAuth = sessionStorage.getItem('isBirthdayLoggedIn');
-
-    // Jika BELUM login tapi nekat buka Ultah.html (lewat URL / tombol Next browser)
-    if (isAuth !== 'true') {
-        // Ganti history browser agar tidak bisa di-Forward kembali & lempar ke login
-        window.location.replace('index.html');
-    }
 })();
     </script>
 </body>
