@@ -433,85 +433,142 @@
             </div>
         </div>
     </div>
-
-   JavaScript
 <script>
-    // 1. Check Sesi Saat Halaman Dimuat
-    window.addEventListener('pageshow', function () {
-        var isAuth = sessionStorage.getItem('isBirthdayLoggedIn');
-        var overlay = document.getElementById('loginOverlay');
-        if (isAuth === 'true' && overlay) {
-            overlay.style.display = 'none';
-        }
-    });
+        (function() {
+            var c = document.getElementById('stars');
+            if (!c) return;
+            for (var i = 0; i < 200; i++) {
+                var s = document.createElement('div');
+                s.className = 'star';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 100 + '%';
+                s.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
+                s.style.animationDelay = Math.random() * 4 + 's';
+                s.style.width = s.style.height = (1 + Math.random() * 3) + 'px';
+                c.appendChild(s);
+            }
+        })();
 
-    // 2. Fungsi Login
-    function handleLogin(event) {
-        event.preventDefault();
-        const VALID_USER = "rara";
-        const VALID_PASS = "1234"; 
+        (function() {
+            var c = document.getElementById('sparkleContainer');
+            if (!c) return;
+            for (var i = 0; i < 15; i++) {
+                var s = document.createElement('div');
+                s.className = 'sparkle';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 100 + '%';
+                s.style.setProperty('--sp-duration', (2 + Math.random() * 3) + 's');
+                s.style.animationDelay = Math.random() * 5 + 's';
+                s.style.width = s.style.height = (4 + Math.random() * 6) + 'px';
+                c.appendChild(s);
+            }
+        })();
 
-        var userIn = document.getElementById('usernameInput').value.trim().toLowerCase();
-        var passIn = document.getElementById('passwordInput').value.trim();
-        var errorMsg = document.getElementById('loginError');
-        var overlay = document.getElementById('loginOverlay');
+        var envelope = document.getElementById('envelope');
+        var envFlap = document.getElementById('envFlap');
+        var envSeal = document.getElementById('envSeal');
+        var envInner = document.getElementById('envInner');
+        var clickPrompt = document.getElementById('clickPrompt');
+        var btnOpen = document.getElementById('btnOpen');
+        var ribbon = document.getElementById('ribbon');
+        var opened = false;
 
-        if (userIn === VALID_USER && passIn === VALID_PASS) {
-            sessionStorage.setItem('isBirthdayLoggedIn', 'true');
-            overlay.style.transition = 'opacity 0.4s ease';
-            overlay.style.opacity = '0';
-            setTimeout(function() { overlay.style.display = 'none'; }, 400);
-        } else {
-            errorMsg.innerText = "Username / Password salah! 😜";
-        }
-    }
+        envelope.style.opacity = '0';
+        envelope.style.transform = 'translateX(-250px) rotate(-12deg) scale(0.5)';
+        envelope.style.filter = 'blur(4px)';
 
-    // 3. Efek Bintang Dekorasi
-    (function() {
-        var c = document.getElementById('stars');
-        if (!c) return;
-        for (var i = 0; i < 150; i++) {
-            var s = document.createElement('div');
-            s.className = 'star';
-            s.style.left = Math.random() * 100 + '%';
-            s.style.top = Math.random() * 100 + '%';
-            s.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
-            s.style.animationDelay = Math.random() * 4 + 's';
-            c.appendChild(s);
-        }
-    })();
+        setTimeout(function() {
+            envelope.style.transition = 'all 1.4s cubic-bezier(0.22, 1, 0.36, 1)';
+            envelope.style.opacity = '1';
+            envelope.style.transform = 'translateX(0) rotate(0deg) scale(1)';
+            envelope.style.filter = 'blur(0)';
+        }, 400);
 
-    // 4. Logika Buka Amplop & Tombol Pindah Halaman
-    var envelope = document.getElementById('envelope');
-    var btnOpen = document.getElementById('btnOpen');
-    var opened = false;
+        setTimeout(function() {
+            if (clickPrompt) clickPrompt.classList.add('visible');
+        }, 2200);
 
-    // Buka Amplop saat diklik
-    envelope.addEventListener('click', function(e) {
-        // Jangan jalankan animasi buka jika yang diklik adalah tombol "Buka Ucapan"
-        if (e.target.id === 'btnOpen') return;
-        
-        if (opened) return;
-        opened = true;
+        envelope.addEventListener('click', function() {
+            if (opened) return;
+            opened = true;
+            if (clickPrompt) clickPrompt.classList.remove('visible');
 
-        document.getElementById('clickPrompt')?.classList.remove('visible');
-        document.getElementById('envFlap')?.classList.add('open');
-        document.getElementById('envSeal')?.classList.add('hidden');
-        document.getElementById('ribbon')?.classList.add('visible');
-        document.getElementById('envInner')?.classList.add('visible');
-        
-        setTimeout(function() { 
-            if (btnOpen) btnOpen.classList.add('visible'); 
-        }, 600);
-    });
+            envelope.style.transition = 'transform 0.3s ease';
+            envelope.style.transform = 'translateY(-4px)';
 
-    // Pindah Halaman ke Ultah.html saat tombol "Buka Ucapan" diklik
-    if (btnOpen) {
-        btnOpen.addEventListener('click', function(e) {
-            e.stopPropagation(); // Mencegah klik 'nembus' ke amplop
-            window.location.href = 'Ultah.html';
+            setTimeout(function() {
+                if (envFlap) envFlap.classList.add('open');
+                if (envSeal) envSeal.classList.add('hidden');
+                if (ribbon) ribbon.classList.add('visible');
+                if (envInner) envInner.classList.add('visible');
+            }, 300);
+
+            setTimeout(function() {
+                envelope.style.transition = 'transform 0.3s ease';
+                envelope.style.transform = 'translateY(0)';
+            }, 500);
+
+            setTimeout(function() {
+                if (btnOpen) btnOpen.classList.add('visible');
+            }, 1000);
         });
+
+        if (btnOpen) {
+            btnOpen.addEventListener('click', function() {
+                window.location.href = 'Ultah.html';
+            });
+        }
+        function handleLogin(event) {
+    event.preventDefault();
+
+// 1. CEK STATUS LOGIN SAAT HALAMAN DIMUAT / DITEKAN TOMBOL BACK
+window.addEventListener('pageshow', function (event) {
+    var isAuth = sessionStorage.getItem('isBirthdayLoggedIn');
+    var overlay = document.getElementById('loginOverlay');
+
+    // Jika sudah pernah login sebelumnya
+    if (isAuth === 'true') {
+        if (overlay) {
+            overlay.style.display = 'none'; // Sembunyikan form login otomatis
+        }
+        // Opsional: Jika ingin pengguna langsung dilempar ke Ultah.html saat tekan back:
+        // window.location.href = 'Ultah.html';
     }
-</script>
+});
+}
+function handleLogin(event) {
+    event.preventDefault();
+
+    const VALID_USER = "rara";
+    const VALID_PASS = "1234"; 
+
+    var userIn = document.getElementById('usernameInput').value.trim().toLowerCase();
+    var passIn = document.getElementById('passwordInput').value.trim();
+    var errorMsg = document.getElementById('loginError');
+    var overlay = document.getElementById('loginOverlay');
+
+    if (userIn === VALID_USER && passIn === VALID_PASS) {
+        // SIMPAN STATUS LOGIN KE SESSION STORAGE
+        sessionStorage.setItem('isBirthdayLoggedIn', 'true');
+
+        overlay.style.transition = 'opacity 0.4s ease';
+        overlay.style.opacity = '0';
+        setTimeout(function() {
+            overlay.style.display = 'none';
+        }, 400);
+    } else {
+        errorMsg.innerText = "Username / Password salah! 😜";
+    }
+}
+(function enforceAuthentication() {
+    var isAuth = sessionStorage.getItem('isBirthdayLoggedIn');
+
+    // Jika BELUM login tapi nekat buka Ultah.html (lewat URL / tombol Next browser)
+    if (isAuth !== 'true') {
+        // Ganti history browser agar tidak bisa di-Forward kembali & lempar ke login
+        window.location.replace('index.html');
+    }
+})();
+    </script>
 </body>
 </html>
