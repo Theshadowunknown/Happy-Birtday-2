@@ -303,10 +303,109 @@
             .env-inner { padding: 12px; }
             .inner-text { font-size: 0.8rem; }
         }
+        /* ===== OVERLAY LOGIN ===== */
+.login-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(15, 12, 41, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 30px 25px;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.lock-icon {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.login-card h2 {
+    color: #fff;
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+}
+
+.login-card p {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 20px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.9rem;
+    outline: none;
+    text-align: center;
+}
+
+.login-form input:focus {
+    border-color: #ff6b8a;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, #ff6b8a, #e6395a);
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin-top: 5px;
+}
+
+.btn-login:hover { transform: scale(1.02); }
+
+.login-error {
+    color: #ff4d4d !important;
+    font-size: 0.8rem !important;
+    min-height: 16px;
+    margin-bottom: 0 !important;
+}
     </style>
 </head>
 <body>
-
+    <!-- OVERLAY LOGIN SEMENTARA -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+        <div class="lock-icon">🔒</div>
+        <h2>Akses Rahasia</h2>
+        <p>Masukkan username & password untuk membuka amplop!</p>
+        
+        <form onsubmit="handleLogin(event)" class="login-form">
+            <input type="text" id="usernameInput" placeholder="Username" required autocomplete="off">
+            <input type="password" id="passwordInput" placeholder="Password Rahasia" required autocomplete="off">
+            <p id="loginError" class="login-error"></p>
+            <button type="submit" class="btn-login">Masuk ✨</button>
+        </form>
+    </div>
+</div>
     <div class="stars" id="stars"></div>
     <div class="sparkle-container" id="sparkleContainer"></div>
 
@@ -427,6 +526,57 @@
                 window.location.href = 'Ultah.html';
             });
         }
+        function handleLogin(event) {
+    event.preventDefault();
+
+// 1. CEK STATUS LOGIN SAAT HALAMAN DIMUAT / DITEKAN TOMBOL BACK
+window.addEventListener('pageshow', function (event) {
+    var isAuth = sessionStorage.getItem('isBirthdayLoggedIn');
+    var overlay = document.getElementById('loginOverlay');
+
+    // Jika sudah pernah login sebelumnya
+    if (isAuth === 'true') {
+        if (overlay) {
+            overlay.style.display = 'none'; // Sembunyikan form login otomatis
+        }
+        // Opsional: Jika ingin pengguna langsung dilempar ke Ultah.html saat tekan back:
+        // window.location.href = 'Ultah.html';
+    }
+});
+}
+function handleLogin(event) {
+    event.preventDefault();
+
+    const VALID_USER = "rara";
+    const VALID_PASS = "1234"; 
+
+    var userIn = document.getElementById('usernameInput').value.trim().toLowerCase();
+    var passIn = document.getElementById('passwordInput').value.trim();
+    var errorMsg = document.getElementById('loginError');
+    var overlay = document.getElementById('loginOverlay');
+
+    if (userIn === VALID_USER && passIn === VALID_PASS) {
+        // SIMPAN STATUS LOGIN KE SESSION STORAGE
+        sessionStorage.setItem('isBirthdayLoggedIn', 'true');
+
+        overlay.style.transition = 'opacity 0.4s ease';
+        overlay.style.opacity = '0';
+        setTimeout(function() {
+            overlay.style.display = 'none';
+        }, 400);
+    } else {
+        errorMsg.innerText = "Username / Password salah! 😜";
+    }
+}
+(function enforceAuthentication() {
+    var isAuth = sessionStorage.getItem('isBirthdayLoggedIn');
+
+    // Jika BELUM login tapi nekat buka Ultah.html (lewat URL / tombol Next browser)
+    if (isAuth !== 'true') {
+        // Ganti history browser agar tidak bisa di-Forward kembali & lempar ke login
+        window.location.replace('amplop.html');
+    }
+})();
     </script>
 
 </body>
