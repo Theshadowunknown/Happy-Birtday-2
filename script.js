@@ -141,6 +141,17 @@ setInterval(function() {
    ======================================================== */
 
 // 1. Fungsi Perpindahan Tab Dashboard
+/* ==========================================
+   PROTEKSI STRICT HALAMAN UTAMA (ULTAH.HTML)
+   ========================================== */
+(function enforceAuthentication() {
+    var isAuth = sessionStorage.getItem('isBirthdayLoggedIn');
+
+    // Jika BELUM login, lempar paksa kembali ke index.html (Halaman Amplop / Login)
+    if (isAuth !== 'true') {
+        window.location.replace('index.html');
+    }
+})();
 function switchTab(tabId, btnElement) {
     document.querySelectorAll('.tab-panel').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
