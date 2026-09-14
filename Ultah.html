@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun, Rara! 🎂</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- File Styling -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <div class="stars" id="stars"></div>
+    <div class="balloon-container" id="balloonContainer"></div>
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="game-dashboard">
+        
+        <!-- SIDEBAR MENU -->
+        <aside class="sidebar">
+            <div class="player-profile">
+                <div class="avatar-box"><i class="fa-solid fa-crown"></i></div>
+                <div class="player-info">
+                    <h3>Rara</h3>
+                    <p><i class="fa-solid fa-bolt"></i> LEVEL UP! 🎂</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li><button class="nav-btn active" onclick="switchTab('tab-pesan', this)"><i class="fa-solid fa-envelope"></i> Pesan Ucapan</button></li>
+                <li><button class="nav-btn" onclick="switchTab('tab-momen', this)"><i class="fa-solid fa-images"></i> Momen Spesial</button></li>
+                <li><button class="nav-btn" onclick="switchTab('tab-minigame', this)"><i class="fa-solid fa-gamepad"></i> Mini Game</button></li>
+                <li><button class="nav-btn" onclick="switchTab('tab-hadiah', this)"><i class="fa-solid fa-gift"></i> Kejutan Hadiah</button></li>
+            </ul>
+
+            <!-- Tombol music -->
+            <button class="secret-portal-btn" id="secretBtn">
+                <span><i class="fa-solid fa-music"></i> Lagu Rahasia</span>
+                <i class="fa-solid fa-circle-play"></i>
+            </button>
+        </aside>
+
+        <!-- ISI -->
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h1 id="panelTitle">Selamat Ulang Tahun! 🎉</h1>
+                    <p id="panelSub">Special Day for Special Person</p>
+                </div>
+            </header>
+
+            <!-- Ucapan -->
+            <section id="tab-pesan" class="tab-panel active">
+                <div class="message-box">
+                    <p class="message" id="birthdayMessage">Memuat pesan...</p>
+                </div>
+                <div class="nav-controls">
+                    <button class="btn btn-small" id="prevBtn" disabled>◀ Sebelumnya</button>
+                    <span class="msg-counter" id="msgCounter">1 / 4</span>
+                    <button class="btn btn-small" id="nextBtn">Selanjutnya ▶</button>
+                </div>
+            </section>
+
+            <!-- foto -->
+<section id="tab-momen" class="tab-panel">
+    <div class="moments-grid">
+        <div class="moment-card">
+            <img src="foto1.jpeg.jpeg" alt="Momen 1" class="moment-img">
+        </div>
+        <div class="moment-card">
+            <img src="foto2.jpeg.jpeg" alt="Momen 1" class="moment-img">
+        </div>
+        <div class="moment-card">
+            <img src="foto3.jpeg.jpeg" alt="Momen 1" class="moment-img">
+        </div>
+    </div>
+</section>
+
+            <!-- Balon-->
+<section id="tab-minigame" class="tab-panel">
+    <div class="game-header">
+        <div class="game-stats">
+            <span>🏆 Skor: <strong id="gameScore">0</strong></span>
+            <span>⏳ Waktu: <strong id="gameTimer">30</strong>s</span>
+        </div>
+        <div class="game-controls">
+            <button class="btn-game" id="startPauseBtn" onclick="toggleMiniGame()"><i class="fa-solid fa-play"></i> Mulai</button>
+            <button class="btn-game btn-reset" onclick="resetMiniGame()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+        </div>
+    </div>
+    
+    <!-- area balon -->
+    <div class="balloon-game-area" id="balloonGameArea">
+        <div class="game-overlay" id="gameOverlay">
+            <i class="fa-solid fa-gamepad icon-big cyan"></i>
+            <h3>Mini Game Pecah Balon 🎈</h3>
+            <p class="sub-title">Tekan tombol <strong>Mulai</strong> untuk menerbangkan balon!</p>
+        </div>
+    </div>
+</section>
+
+            <!-- hadiah -->
+            <section id="tab-hadiah" class="tab-panel">
+                <div class="gift-box-area">
+                    <i class="fa-solid fa-gift gift-icon" onclick="openGift()"></i>
+                    <h3>Kotak Hadiah Spesial 🎁</h3>
+                    <p id="giftMsg">Klik kado di atas untuk membuka kejutan!</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- SEMUA LOGIKA JAVASCRIPT ADA DI SINI -->
+    <script src="script.js"></script>
+</body>
+</html>
