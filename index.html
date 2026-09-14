@@ -163,69 +163,84 @@
         </div>
     </div>
 
-    <script>
-        // Check Sesi Saat Halaman Dimuat
-        window.addEventListener('pageshow', function () {
-            var isAuth = sessionStorage.getItem('isBirthdayLoggedIn');
-            var overlay = document.getElementById('loginOverlay');
-            if (isAuth === 'true' && overlay) {
-                overlay.style.display = 'none';
-            }
-        });
-
-        // Fungsi Login
-        function handleLogin(event) {
-            event.preventDefault();
-            const VALID_USER = "rara";
-            const VALID_PASS = "1234"; 
-
-            var userIn = document.getElementById('usernameInput').value.trim().toLowerCase();
-            var passIn = document.getElementById('passwordInput').value.trim();
-            var errorMsg = document.getElementById('loginError');
-            var overlay = document.getElementById('loginOverlay');
-
-            if (userIn === VALID_USER && passIn === VALID_PASS) {
-                sessionStorage.setItem('isBirthdayLoggedIn', 'true');
-                overlay.style.transition = 'opacity 0.4s ease';
-                overlay.style.opacity = '0';
-                setTimeout(function() { overlay.style.display = 'none'; }, 400);
-            } else {
-                errorMsg.innerText = "Username / Password salah! 😜";
-            }
+   JavaScript
+<script>
+    // 1. Check Sesi Saat Halaman Dimuat
+    window.addEventListener('pageshow', function () {
+        var isAuth = sessionStorage.getItem('isBirthdayLoggedIn');
+        var overlay = document.getElementById('loginOverlay');
+        if (isAuth === 'true' && overlay) {
+            overlay.style.display = 'none';
         }
+    });
 
-        // Bintang & Animasi Amplop
-        (function() {
-            var c = document.getElementById('stars');
-            if (!c) return;
-            for (var i = 0; i < 150; i++) {
-                var s = document.createElement('div');
-                s.className = 'star';
-                s.style.left = Math.random() * 100 + '%';
-                s.style.top = Math.random() * 100 + '%';
-                s.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
-                s.style.animationDelay = Math.random() * 4 + 's';
-                c.appendChild(s);
-            }
-        })();
+    // 2. Fungsi Login
+    function handleLogin(event) {
+        event.preventDefault();
+        const VALID_USER = "rara";
+        const VALID_PASS = "1234"; 
 
-        var envelope = document.getElementById('envelope');
-        var opened = false;
+        var userIn = document.getElementById('usernameInput').value.trim().toLowerCase();
+        var passIn = document.getElementById('passwordInput').value.trim();
+        var errorMsg = document.getElementById('loginError');
+        var overlay = document.getElementById('loginOverlay');
 
-        envelope.addEventListener('click', function() {
-            if (opened) return;
-            opened = true;
-            document.getElementById('clickPrompt')?.classList.remove('visible');
-            document.getElementById('envFlap')?.classList.add('open');
-            document.getElementById('envSeal')?.classList.add('hidden');
-            document.getElementById('ribbon')?.classList.add('visible');
-            document.getElementById('envInner')?.classList.add('visible');
-            setTimeout(function() { document.getElementById('btnOpen')?.classList.add('visible'); }, 800);
-        });
+        if (userIn === VALID_USER && passIn === VALID_PASS) {
+            sessionStorage.setItem('isBirthdayLoggedIn', 'true');
+            overlay.style.transition = 'opacity 0.4s ease';
+            overlay.style.opacity = '0';
+            setTimeout(function() { overlay.style.display = 'none'; }, 400);
+        } else {
+            errorMsg.innerText = "Username / Password salah! 😜";
+        }
+    }
 
-        document.getElementById('btnOpen')?.addEventListener('click', function() {
+    // 3. Efek Bintang Dekorasi
+    (function() {
+        var c = document.getElementById('stars');
+        if (!c) return;
+        for (var i = 0; i < 150; i++) {
+            var s = document.createElement('div');
+            s.className = 'star';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top = Math.random() * 100 + '%';
+            s.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
+            s.style.animationDelay = Math.random() * 4 + 's';
+            c.appendChild(s);
+        }
+    })();
+
+    // 4. Logika Buka Amplop & Tombol Pindah Halaman
+    var envelope = document.getElementById('envelope');
+    var btnOpen = document.getElementById('btnOpen');
+    var opened = false;
+
+    // Buka Amplop saat diklik
+    envelope.addEventListener('click', function(e) {
+        // Jangan jalankan animasi buka jika yang diklik adalah tombol "Buka Ucapan"
+        if (e.target.id === 'btnOpen') return;
+        
+        if (opened) return;
+        opened = true;
+
+        document.getElementById('clickPrompt')?.classList.remove('visible');
+        document.getElementById('envFlap')?.classList.add('open');
+        document.getElementById('envSeal')?.classList.add('hidden');
+        document.getElementById('ribbon')?.classList.add('visible');
+        document.getElementById('envInner')?.classList.add('visible');
+        
+        setTimeout(function() { 
+            if (btnOpen) btnOpen.classList.add('visible'); 
+        }, 600);
+    });
+
+    // Pindah Halaman ke Ultah.html saat tombol "Buka Ucapan" diklik
+    if (btnOpen) {
+        btnOpen.addEventListener('click', function(e) {
+            e.stopPropagation(); // Mencegah klik 'nembus' ke amplop
             window.location.href = 'Ultah.html';
         });
-    </script>
+    }
+</script>
 </body>
 </html>
