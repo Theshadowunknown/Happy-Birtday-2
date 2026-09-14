@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amplop Spesial 🎂</title>
-       <style>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -391,49 +391,57 @@
     </style>
 </head>
 <body>
-
-    <!-- OVERLAY LOGIN -->
-    <div class="login-overlay" id="loginOverlay">
-        <div class="login-card">
-            <div class="lock-icon">🔒</div>
-            <h2>Akses Rahasia</h2>
-            <p>Masukkan username & password untuk membuka amplop!</p>
-            <form onsubmit="handleLogin(event)" class="login-form">
-                <input type="text" id="usernameInput" placeholder="Username" required autocomplete="off">
-                <input type="password" id="passwordInput" placeholder="Password Rahasia" required autocomplete="off">
-                <p id="loginError" class="login-error"></p>
-                <button type="submit" class="btn-login">Masuk ✨</button>
-            </form>
-        </div>
+    <!-- OVERLAY LOGIN SEMENTARA -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+        <div class="lock-icon">🔒</div>
+        <h2>Akses Rahasia</h2>
+        <p>Masukkan username & password untuk membuka amplop!</p>
+        
+        <form onsubmit="handleLogin(event)" class="login-form">
+            <input type="text" id="usernameInput" placeholder="Username" required autocomplete="off">
+            <input type="password" id="passwordInput" placeholder="Password Rahasia" required autocomplete="off">
+            <p id="loginError" class="login-error"></p>
+            <button type="submit" class="btn-login">Masuk ✨</button>
+        </form>
     </div>
-
+</div>
     <div class="stars" id="stars"></div>
     <div class="sparkle-container" id="sparkleContainer"></div>
+
+    <div class="float-particle" style="top:20%;left:15%;animation-delay:0.2s">✨</div>
+    <div class="float-particle" style="top:15%;right:20%;animation-delay:1s">⭐</div>
+    <div class="float-particle" style="bottom:25%;left:10%;animation-delay:2.2s">💫</div>
+    <div class="float-particle" style="bottom:20%;right:15%;animation-delay:3.5s">✨</div>
 
     <div class="click-prompt" id="clickPrompt">📌 Klik amplop untuk membuka 📌</div>
 
     <div class="envelope-wrapper">
         <div class="envelope" id="envelope">
+
             <div class="env-body"></div>
+
             <div class="env-side-left"></div>
             <div class="env-side-right"></div>
+
             <div class="env-flap" id="envFlap"></div>
+
             <div class="ribbon" id="ribbon">
                 <div class="ribbon-piece"></div>
                 <div class="ribbon-piece"></div>
                 <div class="ribbon-piece"></div>
-            </div>
+
             <div class="env-seal" id="envSeal">
                 <div class="env-seal-inner">📍</div>
-            </div>
+
             <div class="env-inner" id="envInner">
                 <div class="inner-emoji">🎉</div>
                 <div class="inner-text">Ada kejutan spesial untukmu...</div>
                 <button class="btn-open" id="btnOpen">🎊 Buka Ucapan 🎊</button>
             </div>
-        </div>
     </div>
-<script>
+
+    <script>
         (function() {
             var c = document.getElementById('stars');
             if (!c) return;
@@ -559,7 +567,8 @@ function handleLogin(event) {
     } else {
         errorMsg.innerText = "Username / Password salah! 😜";
     }
-})();
+}
     </script>
+
 </body>
 </html>
